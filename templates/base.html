@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ANIMAL RESCUE</title>
+
+    <!-- Pixel / Retro Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <div class="wrapper flicker">
+
+        <!-- =====================================================
+                            TOP SYSTEM BAR
+        ====================================================== -->
+
+        <header class="topbar">
+
+            <div class="topbar-title">
+                <a href="/home">HOME</a>
+                <a href="/animals">ANIMALS</a>
+            </div>
+
+            <div class="topbar-status">
+                VERSION 6.0
+            </div>
+
+        </header>
+        <!-- =====================================================
+                            MAIN CONTENT GRID
+        ====================================================== -->
+
+        <main class="main-grid">
+            <!-- =================================================
+                                CONTENT AREA
+            ================================================== -->
+            <section>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        {% block panel_header %}{% endblock %}
+                    </div>
+
+                    <!-- HERO CONTENT -->
+                    <div class="hero">
+                    {% block hero %}{% endblock %}
+                    </div>
+                </div>
+    </div>
+
+</body>
+
+</html>

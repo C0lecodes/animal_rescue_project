@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block panel_header %}ANIMALS{% endblock %}
+
+{% block hero %}
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Species</th>
+        <th>Breed</th>
+        <th>Rescue Date</th>
+        <th>Foster Carer</th>
+        <th>Adoption Status</th>
+    </tr>
+
+    {% for animal in animals %}
+    <tr>
+        <td>{{ animal.animalName }}</td>
+        <td>{{ animal.animalSpecies }}</td>
+        <td>{{ animal.animalBreed }}</td>
+        <td>{{ animal.animalRescueDate }}</td>
+        <td>{{ animal.fosterCarerFirstName + animal.fosterCarerLastName }}</td>
+        <td>{{ animal.adoptionStatus }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
