@@ -17,6 +17,7 @@
 
     <div class="form-row">
         <label>SPECIES</label>
+        <a href="/add_species">ADD NEW SPECIES</a>
         <select type="select" name="species" required>
         {% for option in species_options %}
         <option value= "{{ option.idspecies }}">{{ option.animalSpecies }}</option>
@@ -26,6 +27,7 @@
 
     <div class="form-row">
         <label>BREED</label>
+        <a href="/add_breed">ADD NEW BREED</a>
         <select type="select" name="breed" required>
         {% for option in breed_options %}
         <option value= "{{ option.idbreed }}">{{ option.animalBreed }}</option>
@@ -52,7 +54,7 @@
     </div>
 
     <button type="submit" class="button">
-        REGISTER USER
+        REGISTER ANIMAL
     </button>
 </form>
 {% endblock %}

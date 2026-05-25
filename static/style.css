@@ -130,7 +130,13 @@ body::before {
     color: #ffffff;
     text-decoration: none; 
     font-weight: bold;  
+    display: inline-block;
+    
+    padding: 4px 10px;
 
+    background: var(--bg-darker);
+
+    border: 2px solid black;
 }
 
 .topbar-title a:hover {
@@ -254,18 +260,31 @@ body::before {
 }
 
 .hero tr:nth-child(even) {
-  background-color: #fafafa; /* Zebra striping */
+  background-color: var(--accent-dark); /* Zebra striping */
 }
 
 .hero tr:hover {
   background-color: #f1f1f1; /* Hover feedback */
 }
 
-.form-row input, .form-row select {
+.form-row input, .form-row select{
     width: 100%;
     padding: 12px;
     margin: 10px 0;
     box-sizing: border-box;
+}
+
+.form-row a {
+    color: #ffffff;
+    text-decoration: none; 
+    font-weight: bold;  
+    display: inline-block;
+    
+    padding: 4px 10px;
+
+    background: var(--bg-dark);
+
+    border: 2px solid black;
 }
 /* -------------------------
    BUTTONS

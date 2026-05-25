@@ -11,7 +11,7 @@ def get_db_connection():
 def sql_get_query(query, *vars) -> any:
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute(query, (vars))
+    cursor.execute(query, vars)
 
     results = cursor.fetchall()
 
@@ -30,9 +30,9 @@ def animals():
     query = """
     SELECT a.animalName, s.animalSpecies, b.animalBreed, a.animalRescueDate,f.fosterCarerFirstName, f.fosterCarerLastName, ads.adoptionStatus
 	FROM animal a
-		INNER JOIN species s ON a.idanimal = s.idspecies
-		INNER JOIN breed b ON a.idanimal = b.idbreed
-		INNER JOIN fosterCarer f ON a.idanimal = f.idfosterCarer
+		INNER JOIN species s ON a.species_idspecies = s.idspecies
+		INNER JOIN breed b ON a.breed_idbreed = b.idbreed
+		INNER JOIN fosterCarer f ON a.fosterCarer_idfosterCarer = f.idfosterCarer
         INNER JOIN adoptionInfo ai ON a.adoptionStatus_idadoptionInfo = ai.idadoptionInfo
         INNER JOIN adoptionStatus ads ON ai.adoptionStatus_idadoptionStatus = ads.idadoptionStatus
     """
@@ -84,12 +84,12 @@ def add_animal():
                 INSERT INTO adoptionInfo (adoptionStatus_idadoptionStatus) 
                 VALUE (%s);
                     """
-            cursor.execute(query, (adoption_status))
+            cursor.execute(query, (adoption_status,))
 
-            adoption_info_id = cursor.lastrowid()
+            adoption_info_id = cursor.lastrowid
 
             query = """
-                INSERT INTO animals (animalName, animalRescueDate, species_idspecies, breed_idbreed, adoptionStatus_idadoptionInfo, fosterCarer_idfosterCarer) 
+                INSERT INTO animal (animalName, animalRescueDate, species_idspecies, breed_idbreed, adoptionStatus_idadoptionInfo, fosterCarer_idfosterCarer) 
                 VALUE (%s, %s, %s, %s, %s, %s);
                     """
             cursor.execute(query, (name, rescue_date, species, breed, adoption_info_id, foster_carer))
@@ -98,10 +98,11 @@ def add_animal():
             cursor.close()
             conn.close()
 
-            return redirect('/home')
+            return redirect('/animals')
         except Exception as e:
-            error = str(e)
-
+            conn.rollback()
+            print("DATABASE ERROR:", e)
+            return str(e), 500
 
     breed_options = sql_get_query("SELECT * FROM breed")
     species_options = sql_get_query("SELECT * FROM species")
@@ -115,6 +116,54 @@ def add_animal():
         status_options=status_options,
         foster_options=foster_options
     )
+
+@app.route('/add_breed', methods=['GET', 'POST'])
+def add_breed():
+    if request.method == 'POST':
+        breed = request.form['breed']
+
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            query = """
+                INSERT INTO breed (animalBreed)
+                VALUES (%s);
+                    """
+            
+            cursor.execute(query, (breed,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect('/add_animal')
+        except Exception as e:
+            error = str(e)
+            print(error)
+    return render_template('add_breed.html')
+
+@app.route('/add_species', methods=['GET', 'POST'])
+def add_species():
+    if request.method == 'POST':
+        species = request.form['species']
+
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            query = """
+                INSERT INTO species (animalSpecies)
+                VALUES (%s);
+                    """
+            
+            cursor.execute(query, (species,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect('/add_animal')
+        except Exception as e:
+            error = str(e)
+            print(error)
+    return render_template('add_species.html')
 
 if __name__ == "__main__":
     app.run(debug=True)
