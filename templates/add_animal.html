@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block panel_header %}ADD ANIMAL{% endblock %}
+
+{% block hero %}
+<form method="post">
+
+    <div class="form-row">
+        <label>NAME</label>
+        <input type="text" name="first_name" required>
+    </div>
+
+    <div class="form-row">
+        <label>RESCUE DATE</label>
+        <input type="date" name="rescue_date" required>
+    </div>
+
+    <div class="form-row">
+        <label>SPECIES</label>
+        <select type="select" name="species" required>
+        {% for option in species_options %}
+        <option value= "{{ option.idspecies }}">{{ option.animalSpecies }}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label>BREED</label>
+        <select type="select" name="breed" required>
+        {% for option in breed_options %}
+        <option value= "{{ option.idbreed }}">{{ option.animalBreed }}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label>ADOPTION STATUS</label>
+        <select type="select" name="adoption_status" required>
+        {% for option in status_options %}
+        <option value= "{{ option.idadoptionStatus }}">{{ option.adoptionStatus }}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label>FOSTER CARER</label>
+        <select type="select" name="foster_carer" required>
+        {% for option in foster_options %}
+        <option value= "{{ option.idfosterCarer }}">{{ option.fosterCarerFirstName + " " + option.fosterCarerLastName }}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <button type="submit" class="button">
+        REGISTER USER
+    </button>
+</form>
+{% endblock %}

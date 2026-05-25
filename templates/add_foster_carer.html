@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block panel_header %}FOSTER CARER SIGNUP{% endblock %}
+
+{% block hero %}
+<form method="post">
+
+    <div class="form-row">
+        <label>FIRST NAME</label>
+        <input type="text" name="first_name" required>
+    </div>
+
+    <div class="form-row">
+        <label>LAST NAME</label>
+        <input type="text" name="last_name" required>
+    </div>
+
+    <div class="form-row">
+        <label>PHONE</label>
+        <input type="text" name="phone_number" required>
+    </div>
+
+    <button type="submit" class="button">
+        REGISTER USER
+    </button>
+
+</form>
+{% endblock %}
