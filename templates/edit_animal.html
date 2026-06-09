@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block panel_header %}EDIT ANIMAL{% endblock %}
+
+{% block hero %}
+<form method="post">
+
+    <div class="form-row">
+        <label>NAME</label>
+        <input type="text" name="first_name" value="{{current_attributes.animalName}}" required>
+    </div>
+
+    <div class="form-row">
+        <label>RESCUE DATE</label>
+        <input type="date" name="rescue_date" value="{{current_attributes.animalRescueDate}}" required>
+    </div>
+
+    <div class="form-row">
+        <label>SPECIES</label>
+        <select type="select" name="species"required>
+        {% for option in species_options %}
+        <option value="{{ option.idspecies }}"> 
+        {% if option.animalSpecies == current_attributes.animalSpecies %} Selected: {% endif %}
+        {{ option.animalSpecies }}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label>BREED</label>
+        <select type="select" name="breed" required>
+        {% for option in breed_options %}
+        <option value= "{{ option.idbreed }}">
+        {% if option.animalBreed == current_attributes.animalBreed %} Selected: {% endif %}
+        {{ option.animalBreed }}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label>ADOPTION STATUS</label>
+        <select type="select" name="adoption_status"required>
+        {% for option in status_options %}
+        <option value= "{{ option.idadoptionStatus }}">
+        {% if option.adoptionStatus == current_attributes.adoptionStatus %} Selected: {% endif %}
+        {{ option.adoptionStatus }}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label>FOSTER CARER</label>
+        <select type="select" name="foster_carer"required>
+        {% for option in foster_options %}
+        <option value= "{{ option.idfosterCarer }}">
+        {% if (option.fosterCarerFirstName + " " + option.fosterCarerLastName) == (current_attributes.fosterCarerFirstName + " " + current_attributes.fosterCarerLastName) %} Selected:{% endif %}
+        {{ option.fosterCarerFirstName + " " + option.fosterCarerLastName }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    
+    <button type="submit" class="button">
+        UPDATE ANIMAL
+    </button>
+</form>
+{% endblock %}

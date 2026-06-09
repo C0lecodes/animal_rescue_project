@@ -1,5 +1,4 @@
-from flask import Flask, render_template, request, redirect
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask import Flask, render_template, request, redirect, url_for
 import mysql.connector
 from config import DB_CONFIG
 
@@ -28,7 +27,7 @@ def home():
 def animals():
 
     query = """
-    SELECT a.animalName, s.animalSpecies, b.animalBreed, a.animalRescueDate,f.fosterCarerFirstName, f.fosterCarerLastName, ads.adoptionStatus
+    SELECT a.idanimal, a.animalName, s.animalSpecies, b.animalBreed, a.animalRescueDate,f.fosterCarerFirstName, f.fosterCarerLastName, ads.adoptionStatus
 	FROM animal a
 		INNER JOIN species s ON a.species_idspecies = s.idspecies
 		INNER JOIN breed b ON a.breed_idbreed = b.idbreed
@@ -62,7 +61,7 @@ def add_foster_carer():
             cursor.close()
             conn.close()
 
-            return redirect('/home')
+            return redirect(request.referrer or url_for('home'))
         except Exception as e:
             error = str(e)
     return render_template('add_foster_carer.html')
@@ -164,6 +163,110 @@ def add_species():
             error = str(e)
             print(error)
     return render_template('add_species.html')
+
+@app.route('/delete_animal/<int:id>', methods=['POST'])
+def delete_animal(id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM animal WHERE idanimal = %s", (id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect('/animals')
+
+
+@app.route('/edit_animal/<int:id>', methods=['GET','POST'])
+def edit_animal(id):
+
+    if request.method == 'POST':
+        animalid = id
+        name = request.form['first_name']
+        rescue_date = request.form['rescue_date']
+        species = request.form['species']
+        breed = request.form['breed']
+        adoption_status = request.form['adoption_status']
+        foster_carer = request.form['foster_carer']
+
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            query = """
+                UPDATE animal 
+                SET animalName = %s, 
+                animalRescueDate = %s,
+                species_idspecies = %s, 
+                breed_idbreed = %s,
+                fosterCarer_idfosterCarer = %s
+                WHERE idanimal = %s;
+                    """
+            cursor.execute(query, (name, rescue_date, species, breed, foster_carer, animalid))
+            conn.commit()
+
+            query = """
+            SELECT adoptionStatus_idadoptionInfo 
+            FROM animal
+            WHERE idanimal = %s
+            """
+
+            cursor.execute(query, (animalid,))
+            adoption_info_id = cursor.fetchone()[0]
+
+            query = """
+            UPDATE adoptionInfo
+            SET adoptionStatus_idadoptionStatus = %s
+            WHERE idadoptionInfo = %s
+            """
+            cursor.execute(query, (adoption_status, adoption_info_id,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect('/animals')
+        except Exception as e:
+            conn.rollback()
+            print("DATABASE ERROR:", e)
+            return str(e), 500
+    
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+        
+        query = """
+        SELECT a.idanimal, a.animalName, s.animalSpecies, b.animalBreed, a.animalRescueDate,f.fosterCarerFirstName, f.fosterCarerLastName, ads.adoptionStatus
+        FROM animal a
+            INNER JOIN species s ON a.species_idspecies = s.idspecies
+            INNER JOIN breed b ON a.breed_idbreed = b.idbreed
+            INNER JOIN fosterCarer f ON a.fosterCarer_idfosterCarer = f.idfosterCarer
+            INNER JOIN adoptionInfo ai ON a.adoptionStatus_idadoptionInfo = ai.idadoptionInfo
+            INNER JOIN adoptionStatus ads ON ai.adoptionStatus_idadoptionStatus = ads.idadoptionStatus
+        WHERE a.idanimal = %s;
+        """
+
+        cursor.execute(query, (id,))
+
+        animal = cursor.fetchone()
+
+    except Exception as e:
+        error = str(e)
+        print(error)
+
+    breed_options = sql_get_query("SELECT * FROM breed")
+    species_options = sql_get_query("SELECT * FROM species")
+    status_options = sql_get_query("SELECT * FROM adoptionStatus")
+    foster_options = sql_get_query("SELECT * FROM fosterCarer")
+
+    return render_template(
+        'edit_animal.html',
+        breed_options=breed_options,
+        species_options=species_options,
+        status_options=status_options,
+        foster_options=foster_options,
+        current_attributes=animal
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)

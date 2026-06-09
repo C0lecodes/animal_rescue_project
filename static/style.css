@@ -242,36 +242,38 @@ body::before {
     max-width: 600px;
 }
 
-.hero table {
+.hero-animal_table {
+    table-layout: fixed; 
     width: 100%;
     border-collapse: collapse;
 }
 
-.hero th, td {
+.hero-animal_table th, td {
     padding: 10px;
     text-align: left;
     vertical-align: middle;
     border-bottom: 1px solid #000000
 }
 
-.hero thead {
-  background-color: var(--accent);; /* Light header background */
-  font-weight: bold;
+.hero-animal_table thead {
+    background-color: var(--accent);
+    font-weight: bold;
 }
 
-.hero tr:nth-child(even) {
+.hero-animal_table tr:nth-child(even) {
   background-color: var(--accent-dark); /* Zebra striping */
 }
 
-.hero tr:hover {
+.hero-animal_table tr:hover {
   background-color: #f1f1f1; /* Hover feedback */
 }
 
-.form-row input, .form-row select{
+.form-row input, select{
     width: 100%;
     padding: 12px;
     margin: 10px 0;
     box-sizing: border-box;
+    color: #000000;
 }
 
 .form-row a {
@@ -285,6 +287,42 @@ body::before {
     background: var(--bg-dark);
 
     border: 2px solid black;
+}
+/* -------------------------
+   Search Bar
+------------------------- */
+.search_bar {
+    display: flex;
+    background-color: #ffffff;
+    align-items: center;
+    padding: 12px 14px;
+    border: none;
+    outline: 1px solid black;
+    border-radius: 9999px;
+    max-width: 128px;
+    transition: max-width 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.search_bar:focus-within{
+    max-width: 256px;
+}
+.search_bar input{
+    background-color: white;
+    border: none;
+    outline: none;
+    width: 100%;
+    
+}
+
+.tint-container {
+  background-color: var(--accent); 
+  display: inline-block; 
+}
+
+.tint-container img {
+  display: block;
+  mix-blend-mode: multiply;
 }
 /* -------------------------
    BUTTONS
@@ -308,6 +346,9 @@ body::before {
     border-bottom: 2px solid black;
 
     transition: 0.08s linear;
+
+    margin-bottom: 10px;
+    
 }
 
 .button:hover {
@@ -317,4 +358,33 @@ body::before {
 
 .button:active {
     transform: translateY(2px);
+}
+
+.delete-btn{
+    text-decoration: none;
+    padding: 4px 10px;
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+}
+.edit-btn {
+    text-decoration: none;
+    padding: 4px 10px;
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+}
+.delete-btn:hover, .edit-btn:hover {
+    padding: 2px 10px;
+}
+.delete-btn img, .edit-btn img{
+    height: 24px;
+    width: auto;
+}
+
+.delete-btn:hover img, .edit-btn:hover img {
+    height: 26px;
+    width: auto;
 }
