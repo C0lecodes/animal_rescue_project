@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block panel_header %}ADD VET{% endblock %}
+
+{% block hero %}
+<form method="post">
+
+    <div class="form-row">
+        <label>VET NAME</label>
+        <input type="text" name="vet" required>
+    </div>
+
+    <button type="submit" class="button">
+        ADD NEW VET
+    </button>
+
+</form>
+{% endblock %}

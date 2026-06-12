@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block panel_header %}ADD TREATMENT{% endblock %}
+
+{% block hero %}
+<form method="post">
+
+    <div class="form-row">
+        <label>TREATMENT NAME</label>
+        <input type="text" name="treatment" required>
+    </div>
+
+    <button type="submit" class="button">
+        ADD NEW TREATMENT
+    </button>
+
+</form>
+{% endblock %}

@@ -19,13 +19,10 @@ def sql_get_query(query, *vars) -> any:
 
     return results
 
-@app.route('/home')
-def home():
-    return render_template('home.html')
+def get_animal_data(all=True, id=None):
+    conn = get_db_connection()
 
-@app.route('/animals')
-def animals():
-
+    cursor = conn.cursor(dictionary=True)
     query = """
     SELECT a.idanimal, a.animalName, s.animalSpecies, b.animalBreed, a.animalRescueDate,f.fosterCarerFirstName, f.fosterCarerLastName, ads.adoptionStatus
 	FROM animal a
@@ -35,11 +32,62 @@ def animals():
         INNER JOIN adoptionInfo ai ON a.adoptionStatus_idadoptionInfo = ai.idadoptionInfo
         INNER JOIN adoptionStatus ads ON ai.adoptionStatus_idadoptionStatus = ads.idadoptionStatus
     """
-    animals = sql_get_query(query)
+    if all == False:
+        query += 'WHERE a.idanimal = %s;'
+
+    if id:
+        cursor.execute(query, (id,))
+    else:
+        cursor.execute(query)
+
+    results = cursor.fetchall() if all else cursor.fetchone()
+
+    cursor.close()
+    conn.close()
+
+    return results
+
+@app.route('/')
+def route_home():
+    return redirect('/home')
+
+@app.route('/home')
+def home():
+    return render_template('home.html')
+
+@app.route('/animals')
+def animals():
+    animals = get_animal_data()
 
     if animals:
         return render_template("animals.html", animals=animals)
     
+@app.route('/animal/<int:id>', methods=['GET'])
+def animal(id):
+    animal = get_animal_data(False, id)
+
+    try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+            query = """
+                SELECT a.treatment, b.vetName
+                FROM treatments t
+                INNER JOIN treatment a ON t.treatment_idtreatment = a.idtreatment
+                INNER JOIN vet b ON t.vet_idvet = b.idvet
+                WHERE t.animal_idanimal = %s
+
+                    """
+            cursor.execute(query,(id,))
+            treatments = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            return render_template('animal.html', animal=animal, treatments=treatments)
+
+    except Exception as e:
+            conn.rollback()
+            print("DATABASE ERROR:", e)
+            return str(e), 500
+
 @app.route('/add_foster_carer', methods=['GET', 'POST'])
 def add_foster_carer():
     if request.method == 'POST':
@@ -164,6 +212,54 @@ def add_species():
             print(error)
     return render_template('add_species.html')
 
+@app.route('/add_vet', methods=['GET', 'POST'])
+def add_vet():
+    if request.method == 'POST':
+        vet = request.form['vet']
+
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            query = """
+                INSERT INTO vet (vetName)
+                VALUES (%s);
+                    """
+            
+            cursor.execute(query, (vet,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect('/home')
+        except Exception as e:
+            error = str(e)
+            print(error)
+    return render_template('add_vet.html')
+
+@app.route('/add_treatment', methods=['GET', 'POST'])
+def add_treatment():
+    if request.method == 'POST':
+        treatment = request.form['treatment']
+
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            query = """
+                INSERT INTO treatment (treatment)
+                VALUES (%s);
+                    """
+            
+            cursor.execute(query, (treatment,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect('/home')
+        except Exception as e:
+            error = str(e)
+            print(error)
+    return render_template('add_treatment.html')
+
 @app.route('/delete_animal/<int:id>', methods=['POST'])
 def delete_animal(id):
     conn = get_db_connection()
@@ -176,7 +272,6 @@ def delete_animal(id):
     conn.close()
 
     return redirect('/animals')
-
 
 @app.route('/edit_animal/<int:id>', methods=['GET','POST'])
 def edit_animal(id):
@@ -232,23 +327,7 @@ def edit_animal(id):
             return str(e), 500
     
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor(dictionary=True)
-        
-        query = """
-        SELECT a.idanimal, a.animalName, s.animalSpecies, b.animalBreed, a.animalRescueDate,f.fosterCarerFirstName, f.fosterCarerLastName, ads.adoptionStatus
-        FROM animal a
-            INNER JOIN species s ON a.species_idspecies = s.idspecies
-            INNER JOIN breed b ON a.breed_idbreed = b.idbreed
-            INNER JOIN fosterCarer f ON a.fosterCarer_idfosterCarer = f.idfosterCarer
-            INNER JOIN adoptionInfo ai ON a.adoptionStatus_idadoptionInfo = ai.idadoptionInfo
-            INNER JOIN adoptionStatus ads ON ai.adoptionStatus_idadoptionStatus = ads.idadoptionStatus
-        WHERE a.idanimal = %s;
-        """
-
-        cursor.execute(query, (id,))
-
-        animal = cursor.fetchone()
+        animal = get_animal_data(False, id)
 
     except Exception as e:
         error = str(e)
@@ -266,6 +345,44 @@ def edit_animal(id):
         status_options=status_options,
         foster_options=foster_options,
         current_attributes=animal
+    )
+
+@app.route('/add_animal_treatment/<int:id>', methods=['GET','POST'])
+def add_animal_treatment(id):
+
+    if request.method == "POST":
+        treatment = request.form["treatment"]
+        vet = request.form["vet"]
+        animal_id = id
+        print(treatment, vet, id)
+
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            query = """
+                INSERT INTO treatments (treatment_idtreatment, vet_idvet, animal_idanimal) 
+                VALUE (%s, %s, %s);
+                    """
+            cursor.execute(query, (treatment, vet, animal_id,))
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect(f'/animal/{id}')
+        except Exception as e:
+            conn.rollback()
+            print("DATABASE ERROR:", e)
+            return str(e), 500
+
+    treatments = sql_get_query("SELECT * FROM treatment")
+    vets = sql_get_query("SELECT * FROM vet")
+    print(treatments, vets)
+
+    return render_template(
+        'add_animal_treatment.html',
+        treatments=treatments,
+        vets=vets
     )
 
 if __name__ == "__main__":

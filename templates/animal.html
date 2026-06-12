@@ -1,11 +1,8 @@
 {% extends "base.html" %}
 
-{% block panel_header %}ANIMALS{% endblock %}
+{% block panel_header %}ANIMAL{% endblock %}
 
 {% block hero %}
-<form class="search_bar" method="post">
-    <input type="text" name="search" placeholder="Search...." value="{{ search }}">
-</form>
 
 <table class="hero-animal_table">
     <tr>
@@ -17,8 +14,6 @@
         <th>Adoption Status</th>
         <th>Actions</th>
     </tr>
-
-    {% for animal in animals %}
     <tr>
         <td>{{ animal.animalName }}</td>
         <td>{{ animal.animalSpecies }}</td>
@@ -38,14 +33,27 @@
                 alt="Edit"
                 class="edit-icon">
         </button></form>
-
-        <form action="{{ url_for('animal', id=animal.idanimal) }}" method="GET" style="display:inline;">
-            <button type="submit" class="edit-btn">
-                <img src="{{ url_for('static', filename='images/plus-zoom-symbol.png') }}"
-                    alt="animal"
-                    class="edit-icon">
-            </button></form></td>
+        
+        <form action="{{ url_for('add_animal_treatment', id=animal.idanimal) }}" method="GET" style="display:inline;">
+        <button type="submit" class="edit-btn">
+            <img src="{{ url_for('static', filename='images/health.png') }}"
+                alt="Edit"
+                class="edit-icon">
+        </button></form></td>
     </tr>
-    {% endfor %}
+</table>
+
+<table class="hero-animal_table">
+    <tr>
+        <th>TREATMENT</th>
+        <th>VET</th>
+    </tr>
+
+    {% for treatment in treatments %}
+    <tr>
+        <td>{{ treatment.treatment }}</td>
+        <td>{{ treatment.vetName }}</td>
+    </tr>
+    {%  endfor %}
 </table>
 {% endblock %}

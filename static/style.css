@@ -246,6 +246,7 @@ body::before {
     table-layout: fixed; 
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 10px;
 }
 
 .hero-animal_table th, td {
@@ -360,7 +361,7 @@ body::before {
     transform: translateY(2px);
 }
 
-.delete-btn{
+.delete-btn, .edit-btn{
     text-decoration: none;
     padding: 4px 10px;
     border: none;
@@ -368,14 +369,7 @@ body::before {
     background: none;
     cursor: pointer;
 }
-.edit-btn {
-    text-decoration: none;
-    padding: 4px 10px;
-    border: none;
-    outline: none;
-    background: none;
-    cursor: pointer;
-}
+
 .delete-btn:hover, .edit-btn:hover {
     padding: 2px 10px;
 }

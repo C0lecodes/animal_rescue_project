@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block panel_header %}ADD ANIMAL TREATMENT{% endblock %}
+
+{% block hero %}
+<form method="post">
+
+    <div class="form-row">
+        <label>TREATMENTS</label>
+        <select type="select" name="treatment" required>
+        {% for option in treatments %}
+        <option value= "{{ option.idtreatment }}">{{ option.treatment }}</option>
+        {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-row">
+        <label>VETS</label>
+        <select type="select" name="vet" required>
+        {% for option in vets %}
+        <option value= "{{ option.idvet }}">{{ option.vetName }}</option>
+        {% endfor %}
+        </select>
+    </div>
+    
+    <button type="submit" class="button">
+        SUBMIT TREATMENT
+    </button>
+</form>
+{% endblock %}
