@@ -109,7 +109,7 @@ def add_foster_carer():
             cursor.close()
             conn.close()
 
-            return redirect(request.referrer or url_for('home'))
+            return redirect('/foster_carers')
         except Exception as e:
             error = str(e)
     return render_template('add_foster_carer.html')
@@ -236,10 +236,11 @@ def add_vet():
             print(error)
     return render_template('add_vet.html')
 
-@app.route('/add_treatment', methods=['GET', 'POST'])
-def add_treatment():
+@app.route('/add_treatment/<int:animal_id>', methods=['GET', 'POST'])
+def add_treatment(animal_id):
     if request.method == 'POST':
         treatment = request.form['treatment']
+        animal_id = animal_id
 
         try:
             conn = get_db_connection()
@@ -254,7 +255,10 @@ def add_treatment():
             cursor.close()
             conn.close()
 
-            return redirect('/home')
+            return redirect(
+                url_for('add_animal_treatment', id=animal_id)
+)
+
         except Exception as e:
             error = str(e)
             print(error)
@@ -354,7 +358,6 @@ def add_animal_treatment(id):
         treatment = request.form["treatment"]
         vet = request.form["vet"]
         animal_id = id
-        print(treatment, vet, id)
 
         try:
             conn = get_db_connection()
@@ -377,13 +380,65 @@ def add_animal_treatment(id):
 
     treatments = sql_get_query("SELECT * FROM treatment")
     vets = sql_get_query("SELECT * FROM vet")
-    print(treatments, vets)
 
     return render_template(
         'add_animal_treatment.html',
         treatments=treatments,
-        vets=vets
+        vets=vets,
+        animal_id=id
     )
+
+@app.route('/add_volunteer', methods=['GET', 'POST'])
+def add_volunteer():
+
+    if request.method == 'POST':
+        first_name = request.form["first_name"]
+        last_name = request.form["last_name"]
+        shift_day = request.form["shift_day"]
+
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            query = """
+                INSERT INTO volunteer (volunteerFirstName, volunteerLastName, volunteerShiftDay) 
+                VALUE (%s, %s, %s);
+                    """
+            cursor.execute(query, (first_name, last_name, shift_day,))
+
+            conn.commit()
+            cursor.close()
+            conn.close()
+
+            return redirect('/volunteers')
+        except Exception as e:
+            conn.rollback()
+            print("DATABASE ERROR:", e)
+            return str(e), 500
+        
+    return render_template('add_volunteer.html')
+
+@app.route('/volunteers', methods=['GET'])
+def volunteers():
+    volunteers = sql_get_query("SELECT * FROM volunteer")
+    
+    if volunteers:
+        return render_template('volunteers.html', volunteers=volunteers)
+
+@app.route('/foster_carers')
+def foster_carers():
+
+    foster_carers = sql_get_query("SELECT * FROM fosterCarer")
+
+    if foster_carers:
+        return render_template('foster_carers.html', foster_carers=foster_carers)
+    
+@app.route('/vets')
+def vets():
+
+    vets = sql_get_query("SELECT * FROM vet")
+
+    if vets:
+        return render_template('vets.html', vets=vets)
 
 if __name__ == "__main__":
     app.run(debug=True)

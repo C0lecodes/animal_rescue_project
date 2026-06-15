@@ -289,32 +289,6 @@ body::before {
 
     border: 2px solid black;
 }
-/* -------------------------
-   Search Bar
-------------------------- */
-.search_bar {
-    display: flex;
-    background-color: #ffffff;
-    align-items: center;
-    padding: 12px 14px;
-    border: none;
-    outline: 1px solid black;
-    border-radius: 9999px;
-    max-width: 128px;
-    transition: max-width 0.3s ease;
-    margin-bottom: 10px;
-}
-
-.search_bar:focus-within{
-    max-width: 256px;
-}
-.search_bar input{
-    background-color: white;
-    border: none;
-    outline: none;
-    width: 100%;
-    
-}
 
 .tint-container {
   background-color: var(--accent); 

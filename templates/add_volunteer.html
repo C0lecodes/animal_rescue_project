@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block panel_header %}ADD VOLUNTEER{% endblock %}
+
+{% block hero %}
+<form method="post">
+
+    <div class="form-row">
+        <label>FIRST NAME</label>
+        <input type="text" name="first_name" required>
+    </div>
+
+    <div class="form-row">
+        <label>LAST NAME</label>
+        <input type="text" name="last_name" required>
+    </div>
+
+    <div class="form-row">
+        <label>SHIFT DAYS</label>
+    <select type="select" name="shift_day" required>
+        <option value="Sunday">Sunday</option>
+        <option value="Monday">Monday</option>
+        <option value="Tuesday">Tuesday</option>
+        <option value="Wednesday">Wednesday</option>
+        <option value="Thursday">Thursday</option>
+        <option value="Friday">Friday</option>
+        <option value="Saturday">Saturday</option>
+    </select>
+    </div>
+    
+    <button type="submit" class="button">
+        REGISTER VOLUNTEER
+    </button>
+</form>
+{% endblock %}

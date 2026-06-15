@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block panel_header %}VETS{% endblock %}
+
+{% block hero %}
+
+<table class="hero-animal_table">
+    <tr>
+        <th>Name</th>
+    </tr>
+
+    {% for vet in vets %}
+    <tr>
+        <td>{{ vet.vetName }}</td>
+    </tr>
+    {% endfor %}
+</table>
+<div class="form-row">
+    <a href="/add_vet"> ADD VET</a>
+</div>
+{% endblock %}

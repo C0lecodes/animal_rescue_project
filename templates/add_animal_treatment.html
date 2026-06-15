@@ -26,5 +26,11 @@
     <button type="submit" class="button">
         SUBMIT TREATMENT
     </button>
+
 </form>
+<div class="form-row">
+    <a href="{{ url_for('add_treatment', animal_id=animal_id) }}">
+    ADD TREATMENT
+</a>
+</div>
 {% endblock %}
