@@ -10,6 +10,7 @@ def get_db_connection():
 def sql_get_query(query, *vars) -> any:
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
+    query += " ORDER BY 2 ASC"
     cursor.execute(query, vars)
 
     results = cursor.fetchall()
@@ -33,7 +34,8 @@ def get_animal_data(all=True, id=None):
         INNER JOIN adoptionStatus ads ON ai.adoptionStatus_idadoptionStatus = ads.idadoptionStatus
     """
     if all == False:
-        query += 'WHERE a.idanimal = %s;'
+        query += 'WHERE a.idanimal = %s'
+    query += "ORDER BY 2 ASC;"
 
     if id:
         cursor.execute(query, (id,))
