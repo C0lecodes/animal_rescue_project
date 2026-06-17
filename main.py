@@ -35,7 +35,8 @@ def get_animal_data(all=True, id=None):
     """
     if all == False:
         query += 'WHERE a.idanimal = %s'
-    query += "ORDER BY 2 ASC;"
+    else:
+        query += "ORDER BY 2 ASC;"
 
     if id:
         cursor.execute(query, (id,))

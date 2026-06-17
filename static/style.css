@@ -12,8 +12,8 @@
     --text-main: #d6d6d6;
     --text-dim: #a4a4a4;
 
-    --accent: #ffffff;
-    --accent-dark: #ff7f30;
+    --accent: #ff6e14;
+    --accent-dark: #00000051;
 
     --shadow: rgba(0,0,0,0.5);
 }
@@ -193,6 +193,7 @@ body::before {
     border: 2px solid black;
 
     font-size: 20px;
+    
 }
 
 /* -------------------------
@@ -202,7 +203,7 @@ body::before {
 .hero {
     background: var(--accent);
 
-    color: black;
+    color: rgba(255, 255, 255, 0.849);
 
     padding: 24px;
 
@@ -216,7 +217,7 @@ body::before {
 }
 
 .hero a {
-    color: #ffffff;
+    color: #000000;
     text-decoration: none; 
     font-weight: bold;  
 
@@ -231,8 +232,12 @@ body::before {
 .hero h1 {
     font-size: 72px;
     line-height: 0.9;
-
     margin-bottom: 20px;
+    color: #000000;
+}
+
+.hero label{
+    color: #000000;
 }
 
 .hero p {
@@ -256,17 +261,33 @@ body::before {
     border-bottom: 1px solid #000000
 }
 
+.hero-animal_table th{
+    color: #ffffff;
+      text-shadow: 
+    -1px -1px 0 #000,  
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;   
+}
+
+.hero-animal_table td{
+    font-weight: 300; 
+    text-shadow: 0 1px 3px rgba(255, 185, 115, 0.285);
+}
+
 .hero-animal_table thead {
     background-color: var(--accent);
     font-weight: bold;
 }
 
 .hero-animal_table tr:nth-child(even) {
-  background-color: var(--accent-dark); /* Zebra striping */
+  background-color: var(--accent-dark);
 }
 
 .hero-animal_table tr:hover {
-  background-color: #f1f1f1; /* Hover feedback */
+    font-size:larger;
+    background-color: #f1f1f1;
+    color: #000000;
 }
 
 .form-row input, select{
