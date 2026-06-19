@@ -58,6 +58,11 @@
         {% endfor %}
         </select>
     </div>
+
+    <div class="form-row">
+        <label>ADOPTER NAME</label>
+        <input type="text" name="adopter_name" maxlength="25" value="{{current_attributes.adoptionInfoAdopterName}}" required>
+    </div>
     
     <button type="submit" class="button">
         UPDATE ANIMAL

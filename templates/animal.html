@@ -12,6 +12,7 @@
         <th>Rescue Date</th>
         <th>Foster Carer</th>
         <th>Adoption Status</th>
+        <th>Adopter</th>
         <th>Actions</th>
     </tr>
     <tr>
@@ -21,6 +22,7 @@
         <td>{{ animal.animalRescueDate }}</td>
         <td>{{ animal.fosterCarerFirstName + " " +animal.fosterCarerLastName }}</td>
         <td>{{ animal.adoptionStatus }}</td>
+        <td>{{ adopter_name.adoptionInfoAdopterName }}</td>
         <td><form action="{{ url_for('delete_animal', id=animal.idanimal) }}" method="POST" style="display:inline;">
         <button type="submit" class="delete-btn">
             <img src="{{ url_for('static', filename='images/delete_icon.png') }}"

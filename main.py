@@ -82,9 +82,26 @@ def animal(id):
                     """
             cursor.execute(query,(id,))
             treatments = cursor.fetchall()
+            query = """
+                SELECT adoptionStatus_idadoptionInfo
+                FROM animal
+                WHERE idanimal = %s
+                    """
+            cursor.execute(query, (id,))
+            adoption_id = cursor.fetchone()
+            print(adoption_id)
+
+            query = """
+                SELECT adoptionInfoAdopterName
+                FROM adoptionInfo
+                WHERE idadoptionInfo = %s
+                    """
+            cursor.execute(query, (adoption_id['adoptionStatus_idadoptionInfo'],))
+            adopter_name = cursor.fetchone()
+
             cursor.close()
             conn.close()
-            return render_template('animal.html', animal=animal, treatments=treatments)
+            return render_template('animal.html', animal=animal, treatments=treatments, adopter_name=adopter_name)
 
     except Exception as e:
             conn.rollback()
@@ -126,15 +143,19 @@ def add_animal():
         breed = request.form['breed']
         adoption_status = request.form['adoption_status']
         foster_carer = request.form['foster_carer']
+        adopter_name = request.form['adopter_name']
+
+        if not adopter_name:
+            adopter_name = None
 
         try:
             conn = get_db_connection()
             cursor = conn.cursor()
             query = """
-                INSERT INTO adoptionInfo (adoptionStatus_idadoptionStatus) 
-                VALUE (%s);
+                INSERT INTO adoptionInfo (adoptionStatus_idadoptionStatus, adoptionInfoAdopterName) 
+                VALUE (%s, %s);
                     """
-            cursor.execute(query, (adoption_status,))
+            cursor.execute(query, (adoption_status, adopter_name,))
 
             adoption_info_id = cursor.lastrowid
 
@@ -291,6 +312,10 @@ def edit_animal(id):
         breed = request.form['breed']
         adoption_status = request.form['adoption_status']
         foster_carer = request.form['foster_carer']
+        adopter_name = request.form['adopter_name']
+
+        if not adopter_name:
+            adopter_name = None
 
         try:
             conn = get_db_connection()
@@ -319,10 +344,11 @@ def edit_animal(id):
 
             query = """
             UPDATE adoptionInfo
-            SET adoptionStatus_idadoptionStatus = %s
-            WHERE idadoptionInfo = %s
+            SET adoptionStatus_idadoptionStatus = %s,
+            adoptionInfoAdopterName = %s
+            WHERE idadoptionInfo = %s;
             """
-            cursor.execute(query, (adoption_status, adoption_info_id,))
+            cursor.execute(query, (adoption_status, adopter_name, adoption_info_id,))
             conn.commit()
             cursor.close()
             conn.close()
