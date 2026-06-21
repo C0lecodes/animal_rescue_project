@@ -362,6 +362,26 @@ def edit_animal(id):
     try:
         animal = get_animal_data(False, id)
 
+        conn = get_db_connection()
+        cursor = conn.cursor(dictionary=True)
+
+        query = """
+            SELECT adoptionStatus_idadoptionInfo
+            FROM animal
+            WHERE idanimal = %s
+                """
+        cursor.execute(query, (id,))
+        adoption_id = cursor.fetchone()
+
+        query = """
+            SELECT adoptionInfoAdopterName
+            FROM adoptionInfo
+            WHERE idadoptionInfo = %s
+                """
+        cursor.execute(query, (adoption_id['adoptionStatus_idadoptionInfo'],))
+        adopter_name = cursor.fetchone()
+
+
     except Exception as e:
         error = str(e)
         print(error)
@@ -377,7 +397,8 @@ def edit_animal(id):
         species_options=species_options,
         status_options=status_options,
         foster_options=foster_options,
-        current_attributes=animal
+        current_attributes=animal,
+        adopter_name=adopter_name
     )
 
 @app.route('/add_animal_treatment/<int:id>', methods=['GET','POST'])
