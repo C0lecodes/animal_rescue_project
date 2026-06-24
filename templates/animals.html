@@ -4,6 +4,11 @@
 
 {% block hero %}
 
+
+<!-- Animals page -->
+
+<!-- Lets the user view all the animal data. -->
+
 <table class="hero-animal_table">
     <tr>
         <th>Name</th>
@@ -23,7 +28,7 @@
         <td>{{ animal.animalRescueDate }}</td>
         <td>{{ animal.fosterCarerFirstName + " " +animal.fosterCarerLastName }}</td>
         <td>{{ animal.adoptionStatus }}</td>
-        <td><form action="{{ url_for('delete_animal', id=animal.idanimal) }}" method="POST" style="display:inline;">
+        <td><form action="{{ url_for('delete_animal', id=animal.idanimal) }}" method="POST"class="confirm-delete-form" style="display:inline;">
         <button type="submit" class="delete-btn">
             <img src="{{ url_for('static', filename='images/delete_icon.png') }}"
                 alt="Delete"
@@ -45,4 +50,17 @@
     </tr>
     {% endfor %}
 </table>
+
+<script>
+document.querySelectorAll('.confirm-delete-form').forEach(function(form) {
+    form.addEventListener('submit', function(event) {
+        const userConfirmed = confirm("Are you sure you want to delete this record?");
+        
+        if (!userConfirmed) {
+            event.preventDefault(); 
+        }
+    });
+});
+</script>
+
 {% endblock %}

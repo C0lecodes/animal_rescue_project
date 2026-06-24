@@ -5,9 +5,11 @@ from config import DB_CONFIG
 app = Flask(__name__)
 
 def get_db_connection():
+    """Opens connection to the database."""
     return mysql.connector.connect(**DB_CONFIG)
 
 def sql_get_query(query, *vars) -> any:
+    """Conducts a basic SQL query and returns the result."""
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     query += " ORDER BY 2 ASC"
@@ -21,6 +23,7 @@ def sql_get_query(query, *vars) -> any:
     return results
 
 def get_animal_data(all=True, id=None):
+    """Retrieves all animal data or one animals data."""
     conn = get_db_connection()
 
     cursor = conn.cursor(dictionary=True)
@@ -52,6 +55,7 @@ def get_animal_data(all=True, id=None):
 
 @app.route('/')
 def route_home():
+    """Redirects to home automatically."""
     return redirect('/home')
 
 @app.route('/home')
@@ -60,6 +64,7 @@ def home():
 
 @app.route('/animals')
 def animals():
+    """All animals display route."""
     animals = get_animal_data()
 
     if animals:
@@ -67,13 +72,14 @@ def animals():
     
 @app.route('/animal/<int:id>', methods=['GET'])
 def animal(id):
+    """Displays one animals information."""
     animal = get_animal_data(False, id)
 
     try:
             conn = get_db_connection()
             cursor = conn.cursor(dictionary=True)
             query = """
-                SELECT a.treatment, b.vetName
+                SELECT t.idtreatments, a.treatment, b.vetName
                 FROM treatments t
                 INNER JOIN treatment a ON t.treatment_idtreatment = a.idtreatment
                 INNER JOIN vet b ON t.vet_idvet = b.idvet
@@ -110,6 +116,7 @@ def animal(id):
 
 @app.route('/add_foster_carer', methods=['GET', 'POST'])
 def add_foster_carer():
+    """Handles adding a foster carer to the database."""
     if request.method == 'POST':
         first_name = request.form['first_name']
         last_name = request.form['last_name']
@@ -136,6 +143,7 @@ def add_foster_carer():
 
 @app.route('/add_animal', methods=['GET', 'POST'])
 def add_animal():
+    """Handles adding an animal to the database."""
     if request.method == 'POST':
         name = request.form['first_name']
         rescue_date = request.form['rescue_date']
@@ -190,6 +198,7 @@ def add_animal():
 
 @app.route('/add_breed', methods=['GET', 'POST'])
 def add_breed():
+    """Handles adding a new breed to the database."""
     if request.method == 'POST':
         breed = request.form['breed']
 
@@ -214,6 +223,7 @@ def add_breed():
 
 @app.route('/add_species', methods=['GET', 'POST'])
 def add_species():
+    """Handles adding a new species to the database."""
     if request.method == 'POST':
         species = request.form['species']
 
@@ -238,6 +248,7 @@ def add_species():
 
 @app.route('/add_vet', methods=['GET', 'POST'])
 def add_vet():
+    """Handles adding a new vet to the database."""
     if request.method == 'POST':
         vet = request.form['vet']
 
@@ -262,6 +273,7 @@ def add_vet():
 
 @app.route('/add_treatment/<int:animal_id>', methods=['GET', 'POST'])
 def add_treatment(animal_id):
+    """Handles adding a treatment for an animal to the database."""
     if request.method == 'POST':
         treatment = request.form['treatment']
         animal_id = animal_id
@@ -290,6 +302,7 @@ def add_treatment(animal_id):
 
 @app.route('/delete_animal/<int:id>', methods=['POST'])
 def delete_animal(id):
+    """Deletes an animal."""
     conn = get_db_connection()
     cursor = conn.cursor()
 
@@ -301,9 +314,23 @@ def delete_animal(id):
 
     return redirect('/animals')
 
+@app.route('/delete_animal_treatment/<int:id>/<int:post_id>', methods=['POST'])
+def delete_animal_treatment(id, post_id):
+    """Deletes a treatment attached to an animal."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM treatments WHERE idtreatments = %s", (id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect(f'/animal/{post_id}')
+
 @app.route('/edit_animal/<int:id>', methods=['GET','POST'])
 def edit_animal(id):
-
+    """Handles the edit animal process."""
     if request.method == 'POST':
         animalid = id
         name = request.form['first_name']
@@ -403,7 +430,7 @@ def edit_animal(id):
 
 @app.route('/add_animal_treatment/<int:id>', methods=['GET','POST'])
 def add_animal_treatment(id):
-
+    """Allows an animal to be added to the database."""
     if request.method == "POST":
         treatment = request.form["treatment"]
         vet = request.form["vet"]
@@ -440,7 +467,7 @@ def add_animal_treatment(id):
 
 @app.route('/add_volunteer', methods=['GET', 'POST'])
 def add_volunteer():
-
+    """Allows a new volunteer to be added to the database."""
     if request.method == 'POST':
         first_name = request.form["first_name"]
         last_name = request.form["last_name"]
@@ -469,6 +496,7 @@ def add_volunteer():
 
 @app.route('/volunteers', methods=['GET'])
 def volunteers():
+    """Displays all the volunteer data."""
     volunteers = sql_get_query("SELECT * FROM volunteer")
     
     if volunteers:
@@ -476,7 +504,7 @@ def volunteers():
 
 @app.route('/foster_carers')
 def foster_carers():
-
+    """Displays all the foster carer data."""
     foster_carers = sql_get_query("SELECT * FROM fosterCarer")
 
     if foster_carers:
@@ -484,7 +512,7 @@ def foster_carers():
     
 @app.route('/vets')
 def vets():
-
+    """Displays all the vet data."""
     vets = sql_get_query("SELECT * FROM vet")
 
     if vets:

@@ -4,6 +4,11 @@
 
 {% block hero %}
 
+
+<!-- Animal page -->
+
+<!-- Lets the user view one animals data. Provides more insight than the full animal display. -->
+
 <table class="hero-animal_table">
     <tr>
         <th>Name</th>
@@ -23,7 +28,7 @@
         <td>{{ animal.fosterCarerFirstName + " " +animal.fosterCarerLastName }}</td>
         <td>{{ animal.adoptionStatus }}</td>
         <td>{{ adopter_name.adoptionInfoAdopterName }}</td>
-        <td><form action="{{ url_for('delete_animal', id=animal.idanimal) }}" method="POST" style="display:inline;">
+        <td><form action="{{ url_for('delete_animal', id=animal.idanimal) }}" method="POST" class="confirm-delete-form" style="display:inline;">
         <button type="submit" class="delete-btn">
             <img src="{{ url_for('static', filename='images/delete_icon.png') }}"
                 alt="Delete"
@@ -35,13 +40,13 @@
                 alt="Edit"
                 class="edit-icon">
         </button></form>
-        
         <form action="{{ url_for('add_animal_treatment', id=animal.idanimal) }}" method="GET" style="display:inline;">
-        <button type="submit" class="edit-btn">
-            <img src="{{ url_for('static', filename='images/health.png') }}"
-                alt="Edit"
-                class="edit-icon">
-        </button></form></td>
+            <button type="submit" class="edit-btn">
+                <img src="{{ url_for('static', filename='images/health.png') }}"
+                    alt="Edit"
+                    class="edit-icon">
+            </button>
+        </form></td>
     </tr>
 </table>
 
@@ -49,13 +54,34 @@
     <tr>
         <th>TREATMENT</th>
         <th>VET</th>
+        <th>ACTIONS</th>
     </tr>
 
     {% for treatment in treatments %}
     <tr>
         <td>{{ treatment.treatment }}</td>
         <td>{{ treatment.vetName }}</td>
-    </tr>
+        <td>
+            <form action="{{ url_for('delete_animal_treatment', id=treatment.idtreatments, post_id=animal.idanimal) }}" method="POST" class="confirm-delete-form" style="display:inline;">
+        <button type="submit" class="delete-btn">
+            <img src="{{ url_for('static', filename='images/delete_icon.png') }}"
+                alt="Delete"
+                class="delete-icon"></button></form>
+        </td>
+        </tr>
     {%  endfor %}
 </table>
+
+<script>
+document.querySelectorAll('.confirm-delete-form').forEach(function(form) {
+    form.addEventListener('submit', function(event) {
+        const userConfirmed = confirm("Are you sure you want to delete this record?");
+        
+        if (!userConfirmed) {
+            event.preventDefault(); 
+        }
+    });
+});
+</script>
+
 {% endblock %}

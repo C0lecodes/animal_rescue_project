@@ -1,5 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
+    
+<!-- Base template for all other pages. -->
 
 <head>
     <meta charset="UTF-8">
@@ -17,13 +19,7 @@
 <body>
 
     <div class="wrapper flicker">
-
-        <!-- =====================================================
-                            TOP SYSTEM BAR
-        ====================================================== -->
-
         <header class="topbar">
-
             <div class="topbar-title">
                 <a href="/home">HOME</a>
                 <a href="/animals">ANIMALS</a>
@@ -46,9 +42,9 @@
                         {% block panel_header %}{% endblock %}
                     </div>
 
-                    <!-- HERO CONTENT -->
                     <div class="hero">
-                    {% block hero %}{% endblock %}
+                    {% block hero %}
+                    {% endblock %}
                     </div>
                 </div>
     </div>
