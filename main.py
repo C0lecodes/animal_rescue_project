@@ -95,7 +95,6 @@ def animal(id):
                     """
             cursor.execute(query, (id,))
             adoption_id = cursor.fetchone()
-            print(adoption_id)
 
             query = """
                 SELECT adoptionInfoAdopterName
@@ -247,6 +246,7 @@ def add_species():
     return render_template('add_species.html')
 
 @app.route('/add_vet', methods=['GET', 'POST'])
+
 def add_vet():
     """Handles adding a new vet to the database."""
     if request.method == 'POST':

@@ -224,7 +224,7 @@ body::before {
 }
 
 .hero a:hover {
-    background: var(--accent);
+    background: var(--text-main);
     color: black;
 
 }
